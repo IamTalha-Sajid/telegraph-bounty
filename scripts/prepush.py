@@ -34,8 +34,11 @@ python_scripts = sorted((ROOT / 'scripts').glob('*.py'))
 run([sys.executable, '-m', 'py_compile', *map(str, python_scripts)])
 
 # Shell syntax is part of the launch surface as well.
-for shell in sorted((ROOT / 'scripts').glob('*.sh')):
-    run(['bash', '-n', str(shell)])
+# Skipped on Windows: `bash` there may be the WSL launcher with no distro installed.
+# Linux CI jobs and the shellcheck lint job cover these scripts.
+if sys.platform != 'win32':
+    for shell in sorted((ROOT / 'scripts').glob('*.sh')):
+        run(['bash', '-n', str(shell)])
 
 required = [
     'README.md', 'LICENSE', 'SECURITY.md', 'GOVERNANCE.md', 'SUPPORT.md', 'CODE_OF_CONDUCT.md',
